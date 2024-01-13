@@ -8,8 +8,10 @@ import org.opencv.objdetect.CascadeClassifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import java.io.IOException;
+
 @Service
 public class FaceDetectionService {
     // Constants for brightness adjustment
@@ -25,22 +27,25 @@ public class FaceDetectionService {
     private static final double GAUSSIAN_BLUR_SIZE = 0.05;
 
 
-    private Resource faceResource = new ClassPathResource("haarcascades/haarcascade_frontalface_alt.xml");
+     Resource faceResource = new ClassPathResource("haarcascades/haarcascade_frontalface_alt.xml");
+     Resource inputImagePath = new ClassPathResource("static/sample.jpg");
+     Resource outputImagePath = new ClassPathResource("G:\\test_for_opencv\\output\\retouched_sample.jpg");
+    //String outputImagePath = "static/retouched_image.jpg";
 
-    public void SkinRetouching() throws IOException {
+    public void skinRetouching() throws IOException {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        String inputImagePath = "G:\\test_for_opencv\\hamidreza.jpg";
-        String outputImagePath = "G:\\test_for_opencv\\output\\retouched_image.jpg";
-
+       // String inputImagePath = "G:\\test_for_opencv\\sample.jpg";
+        //String outputImagePath = "G:\\test_for_opencv\\output\\retouched_sample.jpg";
         // Load the input image
-        Mat image = Imgcodecs.imread(inputImagePath);
+        Mat image = Imgcodecs.imread(inputImagePath.getFile().getPath());
 
         // Detect faces using Haar Cascade classifier
         CascadeClassifier faceDetector = new CascadeClassifier(faceResource.getFile().getAbsolutePath());
 
         MatOfRect faces = new MatOfRect();
         faceDetector.detectMultiScale(image, faces);
+
 
         // Apply skin retouching to each detected face
         for (Rect face : faces.toArray()) {
@@ -51,7 +56,9 @@ public class FaceDetectionService {
         }
 
         // Save the retouched image
-        Imgcodecs.imwrite(outputImagePath, image);
+        Mat imageout = Imgcodecs.imread(outputImagePath.getFile().getPath());
+
+        Imgcodecs.imwrite(imageout.toString(), image);
     }
 
     private static void retouchSkin(Mat faceRegion) {

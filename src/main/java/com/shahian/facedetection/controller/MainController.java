@@ -20,7 +20,7 @@ public class MainController {
     @ResponseBody
     @RequestMapping(value = "/skin-retouching", method = RequestMethod.GET)
     public ResponseEntity detectFaceJson1() throws IOException {
-        faceDetectionService.SkinRetouching();
-        return new ResponseEntity(HttpStatus.OK);
+        faceDetectionService.skinRetouching();
+            return new ResponseEntity(HttpStatus.OK);
     }
 }
